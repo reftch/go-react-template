@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/fsnotify/fsnotify"
@@ -19,9 +20,12 @@ func (c *Controller) WsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Watch for file changes
 	go func() {
-		watcher, _ := fsnotify.NewWatcher()
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			log.Fatal(err)
+		}
 		defer watcher.Close()
-		watcher.Add("./app/web/static/js/index.js") // Watch the specific file
+		watcher.Add("./web/static/js/index.js") // Watch the specific file
 		for event := range watcher.Events {
 			if event.Op&fsnotify.Write == fsnotify.Write {
 				err = conn.WriteMessage(websocket.TextMessage, []byte("reload"))
@@ -32,12 +36,11 @@ func (c *Controller) WsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	// Optionally, keep the connection open to handle further messages
+	// Keep the connection open to handle further messages
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
 			break
 		}
 	}
-
 }

@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild src/main.tsx --bundle --sourcemap --outfile=../web/static/js/index.js --watch"
+    "dev": "esbuild src/main.tsx --bundle --sourcemap --outfile=../static/js/index.js --watch"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "reftch",
+  "description": "Web application using React, TypeScript, and ESBuild",
   "devDependencies": {
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

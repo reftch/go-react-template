@@ -3,11 +3,13 @@ package controllers
 import (
 	"html/template"
 	"net/http"
+
+	"github.com/reftch/go-react-template/configs"
 )
 
 var homeTmpl = template.Must(template.ParseFiles(
-	"./app/web/templates/layout.html",
-	"./app/web/templates/home.html",
+	"./web/templates/layout.html",
+	"./web/templates/home.html",
 ))
 
 func (c *Controller) HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,11 +18,13 @@ func (c *Controller) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type HomeData struct {
-		Title string
+		Title       string
+		Environment string
 	}
 
 	data := HomeData{
-		Title: "Resume Editor :: Home",
+		Title:       "Resume Editor :: Home",
+		Environment: configs.Envs.Environment,
 	}
 
 	if err := homeTmpl.Execute(w, data); err != nil {

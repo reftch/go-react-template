@@ -6,20 +6,24 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/reftch/go-react-template/app/internal/controllers"
+	"github.com/reftch/go-react-template/configs"
+	"github.com/reftch/go-react-template/internal/controllers"
 )
 
 func main() {
 	startTime := time.Now() // Capture the start time
 
 	// Serve files from the "static" directory
-	fileServer := http.FileServer(http.Dir("./app/web/static"))
+	fileServer := http.FileServer(http.Dir("./web/static"))
 	// Strip the "/static/" prefix when looking for files
 	http.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	c := controllers.New()
 	c.GET("/", c.HomeHandler)
-	c.GET("/ws", c.WsHandler)
+
+	if configs.Envs.Environment == "development" {
+		c.GET("/ws", c.WsHandler)
+	}
 
 	// Start server with some basic configurations
 	server := &http.Server{

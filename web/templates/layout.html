@@ -10,6 +10,7 @@
     <body>
         {{template "content" .}}
 
+        {{if eq .Environment "development"}}
         <script>
             const ws = new WebSocket("ws://" + location.host + "/ws");
             ws.onmessage = function(event) {
@@ -19,5 +20,6 @@
                 }
             };
         </script>
+        {{end}}
     </body>
 </html>
