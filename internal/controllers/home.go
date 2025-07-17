@@ -17,12 +17,11 @@ func (c *Controller) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type HomeData struct {
+	// anonymous struct to hold data for the template
+	data := struct {
 		Title       string
 		Environment string
-	}
-
-	data := HomeData{
+	}{
 		Title:       "Resume Editor :: Home",
 		Environment: configs.Envs.Environment,
 	}

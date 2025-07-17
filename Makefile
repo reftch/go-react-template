@@ -31,7 +31,7 @@ esbuild:
 	npm run dev	--prefix web/app
 
 app:
-	wgo run cmd/main.go
+	wgo run -file .html cmd/main.go
 
 dev:
 	make -j2 esbuild app

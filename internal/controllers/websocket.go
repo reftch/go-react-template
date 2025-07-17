@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
@@ -25,9 +28,10 @@ func (c *Controller) WsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		defer watcher.Close()
-		watcher.Add("./web/static/js/index.js") // Watch the specific file
+		watchDirsRecursive(watcher, "./web/static/js")
 		for event := range watcher.Events {
 			if event.Op&fsnotify.Write == fsnotify.Write {
+				fmt.Println("XAXAXA ddd")
 				err = conn.WriteMessage(websocket.TextMessage, []byte("reload"))
 				if err != nil {
 					return
@@ -43,4 +47,19 @@ func (c *Controller) WsHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+}
+
+// Add all directories recursively to the watcher
+func watchDirsRecursive(watcher *fsnotify.Watcher, root string) error {
+	return filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			if err := watcher.Add(path); err != nil {
+				log.Printf("failed to watch directory %s: %v", path, err)
+			}
+		}
+		return nil
+	})
 }
